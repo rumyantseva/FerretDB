@@ -121,10 +121,6 @@ func filterDocumentPair(doc *types.Document, filterKey string, filterValue any) 
 		// {field: value}
 		docValue, err := doc.Get(filterKey)
 		if err != nil {
-			// comparing not existent field with null should return true
-			if _, ok := filterValue.(types.NullType); ok {
-				return true, nil
-			}
 			return false, nil // no error - the field is just not present
 		}
 
@@ -246,11 +242,6 @@ func filterFieldExpr(doc *types.Document, filterKey string, expr *types.Document
 
 		fieldValue, err := doc.Get(filterKey)
 		if err != nil && exprKey != "$exists" && exprKey != "$not" {
-			// comparing not existent field with null should return true
-			if _, ok := exprValue.(types.NullType); ok {
-				return true, nil
-			}
-
 			// comparing not existent field with {$all: [null, null, ..., null]} should return true
 			// (at least one null needs to be presented in the $all array)
 			if exprKey == "$all" {

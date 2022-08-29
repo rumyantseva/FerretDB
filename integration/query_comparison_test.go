@@ -1874,3 +1874,17 @@ func TestQueryComparisonMultipleOperators(t *testing.T) {
 		})
 	}
 }
+
+// TODO: delete me, this test is just for investigation
+func TestPamPam(t *testing.T) {
+	t.Parallel()
+
+	ctx, collection := setup.Setup(t)
+	_, err := collection.InsertOne(ctx, bson.D{{"_id", "pam"}, {"v", "pam"}})
+	require.NoError(t, err)
+
+	// filter := bson.D{{"hello", nil}}
+	filter := bson.D{{"hello", bson.D{{"$gt", nil}}}}
+	res := collection.FindOne(ctx, filter)
+	t.Log(res)
+}
