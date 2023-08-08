@@ -261,12 +261,9 @@ var Int32s = &Values[string]{
 	data: map[string]any{
 		"int32":      int32(42),
 		"int32-zero": int32(0),
+		"int32-1":    int32(1),
 		"int32-max":  int32(math.MaxInt32),
 		"int32-min":  int32(math.MinInt32),
-		// "int32-null": nil, TODO: https://github.com/FerretDB/FerretDB/issues/1821
-		"int32-1": int32(4080),
-		"int32-2": int32(1048560),   // random
-		"int32-3": int32(268435440), // random
 	},
 }
 

@@ -1,0 +1,141 @@
+package integration
+
+import (
+	"math"
+	"testing"
+
+	"github.com/FerretDB/FerretDB/integration/shareddata"
+
+	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/stretchr/testify/require"
+	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/FerretDB/FerretDB/integration/setup"
+
+	"go.mongodb.org/mongo-driver/bson"
+)
+
+// Run against MongoDB (from integration directory):
+// go test -count=1 -run='TestQueryLogicalAnd' -target-url=mongodb://127.0.0.1:47017/ -target-backend=mongodb .
+//
+// Run against FerretDB:
+// go test -count=1 -run='TestQueryLogicalAnd' -target-backend=ferretdb-pg -target-tls -postgresql-url=postgres://username@127.0.0.1:5432/ferretdb .
+func TestQueryLogicalAnd(t *testing.T) {
+	t.Parallel()
+
+	ctx, collection := setup.Setup(t, shareddata.Int32s)
+
+	for name, tc := range map[string]struct {
+		filter bson.D             // required, filter to be tested
+		res    []bson.D           // expected result
+		err    mongo.CommandError // expected error
+	}{
+		"One": {
+			filter: bson.D{{
+				"$and", bson.A{
+					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
+				},
+			}},
+			res: []bson.D{
+				{
+					{"_id", "int32-1"},
+					{"v", int32(1)},
+				},
+				{
+					{"_id", "int32"},
+					{"v", int32(42)},
+				},
+				{
+					{"_id", "int32-max"},
+					{"v", int32(math.MaxInt32)},
+				},
+			},
+		},
+		"Two": {
+			filter: bson.D{{
+				"$and", bson.A{
+					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
+					bson.D{{"v", bson.D{{"$lt", int64(42)}}}},
+				},
+			}},
+			res: []bson.D{
+				{
+					{"_id", "int32-1"},
+					{"v", int32(1)},
+				},
+			},
+		},
+		"AndAnd": {
+			filter: bson.D{{
+				"$and", bson.A{
+					bson.D{{"$and", bson.A{
+						bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
+						bson.D{{"v", bson.D{{"$lte", 42.13}}}},
+					}}},
+					bson.D{{"v", bson.D{{"$type", "int"}}}},
+				},
+			}},
+			res: []bson.D{
+				{
+					{"_id", "int32-1"},
+					{"v", int32(1)},
+				},
+				{
+					{"_id", "int32"},
+					{"v", int32(42)},
+				},
+			},
+		},
+		"Zero": {
+			filter: bson.D{{
+				"$and", bson.A{},
+			}},
+			err: mongo.CommandError{
+				Code:    2,
+				Name:    "BadValue",
+				Message: "$and/$or/$nor must be a nonempty array",
+			},
+		},
+		"BadInput": {
+			filter: bson.D{{"$and", nil}},
+			err: mongo.CommandError{
+				Code:    2,
+				Name:    "BadValue",
+				Message: "$and must be an array",
+			},
+		},
+		"BadValue": {
+			filter: bson.D{{
+				"$and", bson.A{
+					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
+					true,
+				},
+			}},
+			err: mongo.CommandError{
+				Code:    2,
+				Name:    "BadValue",
+				Message: "$or/$and/$nor entries need to be full objects",
+			},
+		},
+	} {
+		name, tc := name, tc
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			opts := options.Find().SetSort(bson.D{{"v", 1}})
+
+			cursor, err := collection.Find(ctx, tc.filter, opts)
+
+			if tc.res == nil {
+				AssertEqualCommandError(t, tc.err, err)
+				return
+			}
+
+			res := FetchAll(t, ctx, cursor)
+
+			require.NoError(t, err)
+			AssertEqualDocumentsSlice(t, tc.res, res)
+		})
+	}
+}
