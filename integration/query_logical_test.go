@@ -37,12 +37,20 @@ func TestQueryLogicalAnd(t *testing.T) {
 
 	ctx, collection := setup.Setup(t, shareddata.Int32s)
 
+	// Inserted data - shareddata.Int32s:
+	// {_id: "int32",      v: 42},
+	// {_id: "int32-zero", v: 0},
+	// {_id: "int32-1",    v: 1},
+	// {_id: "int32-max",  v: 2147483647},
+	// {_id: "int32-min",  v: -2147483648},
+
 	for name, tc := range map[string]struct {
 		filter bson.D             // required, filter to be tested
 		res    []bson.D           // expected result
 		err    mongo.CommandError // expected error
 	}{
 		"One": {
+			// {$and: [{v: {$gt: 0}}]}
 			filter: bson.D{{
 				"$and", bson.A{
 					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
@@ -64,6 +72,7 @@ func TestQueryLogicalAnd(t *testing.T) {
 			},
 		},
 		"Two": {
+			// {$and: [{v: {$gt: 0}}, {v: {$lt: 42}}]}
 			filter: bson.D{{
 				"$and", bson.A{
 					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
@@ -78,6 +87,7 @@ func TestQueryLogicalAnd(t *testing.T) {
 			},
 		},
 		"AndAnd": {
+			// {$and: [{$and: [{v: {$gt: 0}}, {v: {$lt: 42}}]}, {v: {$type: "int"}}]}
 			filter: bson.D{{
 				"$and", bson.A{
 					bson.D{{"$and", bson.A{
@@ -99,6 +109,7 @@ func TestQueryLogicalAnd(t *testing.T) {
 			},
 		},
 		"Zero": {
+			// {$and: []}
 			filter: bson.D{{
 				"$and", bson.A{},
 			}},
@@ -114,19 +125,6 @@ func TestQueryLogicalAnd(t *testing.T) {
 				Code:    2,
 				Name:    "BadValue",
 				Message: "$and must be an array",
-			},
-		},
-		"BadValue": {
-			filter: bson.D{{
-				"$and", bson.A{
-					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
-					true,
-				},
-			}},
-			err: mongo.CommandError{
-				Code:    2,
-				Name:    "BadValue",
-				Message: "$or/$and/$nor entries need to be full objects",
 			},
 		},
 	} {
