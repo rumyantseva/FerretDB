@@ -41,8 +41,8 @@ func TestQueryLogicalAnd(t *testing.T) {
 	// {_id: "int32",      v: 42},
 	// {_id: "int32-zero", v: 0},
 	// {_id: "int32-1",    v: 1},
-	// {_id: "int32-max",  v: 2147483647},
-	// {_id: "int32-min",  v: -2147483648},
+	// {_id: "int32-max",  v: 2147483647}, // math.MaxInt32
+	// {_id: "int32-min",  v: -2147483648}, // math.MinInt32
 
 	for name, tc := range map[string]struct {
 		filter bson.D             // required, filter to be tested
