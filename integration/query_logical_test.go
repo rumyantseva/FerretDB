@@ -49,6 +49,21 @@ func TestQueryLogicalAnd(t *testing.T) {
 		res    []bson.D           // expected result
 		err    mongo.CommandError // expected error
 	}{
+		"Two": {
+			// {$and: [{v: {$gt: 0}}, {v: {$lt: 42}}]}
+			filter: bson.D{{
+				"$and", bson.A{
+					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
+					bson.D{{"v", bson.D{{"$lt", int64(42)}}}},
+				},
+			}},
+			res: []bson.D{
+				{
+					{"_id", "int32-1"},
+					{"v", int32(1)},
+				},
+			},
+		},
 		"One": {
 			// {$and: [{v: {$gt: 0}}]}
 			filter: bson.D{{
@@ -68,21 +83,6 @@ func TestQueryLogicalAnd(t *testing.T) {
 				{
 					{"_id", "int32-max"},
 					{"v", int32(math.MaxInt32)},
-				},
-			},
-		},
-		"Two": {
-			// {$and: [{v: {$gt: 0}}, {v: {$lt: 42}}]}
-			filter: bson.D{{
-				"$and", bson.A{
-					bson.D{{"v", bson.D{{"$gt", int32(0)}}}},
-					bson.D{{"v", bson.D{{"$lt", int64(42)}}}},
-				},
-			}},
-			res: []bson.D{
-				{
-					{"_id", "int32-1"},
-					{"v", int32(1)},
 				},
 			},
 		},
