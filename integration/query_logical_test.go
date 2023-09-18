@@ -37,12 +37,12 @@ func TestQueryLogicalAnd(t *testing.T) {
 
 	ctx, collection := setup.Setup(t, shareddata.Int32s)
 
-	// Inserted data - shareddata.Int32s:
-	// {_id: "int32",      v: 42},
+	// Inserted data - shareddata.Int32s (sorted by v):
+	// {_id: "int32-min",  v: -2147483648}, // math.MinInt32
 	// {_id: "int32-zero", v: 0},
 	// {_id: "int32-1",    v: 1},
+	// {_id: "int32",      v: 42},
 	// {_id: "int32-max",  v: 2147483647}, // math.MaxInt32
-	// {_id: "int32-min",  v: -2147483648}, // math.MinInt32
 
 	for name, tc := range map[string]struct {
 		filter bson.D             // required, filter to be tested
