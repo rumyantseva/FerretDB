@@ -27,6 +27,7 @@ import (
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 
+	"github.com/FerretDB/FerretDB/internal/backends"
 	"github.com/FerretDB/FerretDB/internal/backends/sqlite/metadata/pool"
 	"github.com/FerretDB/FerretDB/internal/util/fsql"
 	"github.com/FerretDB/FerretDB/internal/util/lazyerrors"
@@ -303,7 +304,7 @@ func (r *Registry) collectionCreate(ctx context.Context, dbName, collectionName 
 	}
 
 	err = r.indexesCreate(ctx, dbName, collectionName, []IndexInfo{{
-		Name:   "_id_",
+		Name:   backends.DefaultIndexName,
 		Key:    []IndexKeyPair{{Field: "_id"}},
 		Unique: true,
 	}})
@@ -426,7 +427,7 @@ func (r *Registry) CollectionRename(ctx context.Context, dbName, oldCollectionNa
 
 // IndexesCreate creates indexes in the collection.
 //
-// Existing indexes with given names are ignored (TODO?).
+// Existing indexes with given names are ignored.
 func (r *Registry) IndexesCreate(ctx context.Context, dbName, collectionName string, indexes []IndexInfo) error {
 	defer observability.FuncCall(ctx)()
 
@@ -438,7 +439,7 @@ func (r *Registry) IndexesCreate(ctx context.Context, dbName, collectionName str
 
 // indexesCreate creates indexes in the collection.
 //
-// Existing indexes with given names are ignored (TODO?).
+// Existing indexes with given names are ignored.
 //
 // It does not hold the lock.
 func (r *Registry) indexesCreate(ctx context.Context, dbName, collectionName string, indexes []IndexInfo) error {
@@ -472,6 +473,8 @@ func (r *Registry) indexesCreate(ctx context.Context, dbName, collectionName str
 			q += "UNIQUE "
 		}
 
+		// Find a better way to sanitize identifiers.
+		// TODO https://github.com/FerretDB/FerretDB/issues/3418
 		q += "INDEX %q ON %q (%s)"
 
 		columns := make([]string, len(index.Key))
@@ -515,9 +518,9 @@ func (r *Registry) IndexesDrop(ctx context.Context, dbName, collectionName strin
 
 // indexesDrop remove given connection's indexes.
 //
-// Non-existing indexes are ignored (TODO?).
+// Non-existing indexes are ignored.
 //
-// If database or collection does not exist, nil is returned (TODO?).
+// If database or collection does not exist, nil is returned.
 //
 // It does not hold the lock.
 func (r *Registry) indexesDrop(ctx context.Context, dbName, collectionName string, indexNames []string) error {
