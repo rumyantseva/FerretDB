@@ -79,13 +79,13 @@ import (
 )
 
 // sjsontype is a type that can be marshaled from/to sjson.
+//
+//sumtype:decl
 type sjsontype interface {
-	sjsontype() // seal for go-sumtype
+	sjsontype() // seal for sumtype
 
 	json.Marshaler
 }
-
-//go-sumtype:decl sjsontype
 
 // checkConsumed returns error if decoder or reader have buffered or unread data.
 func checkConsumed(dec *json.Decoder, r *bytes.Reader) error {
@@ -136,7 +136,7 @@ func fromSJSON(v sjsontype) any {
 		return int64(*v)
 	}
 
-	panic(fmt.Sprintf("not reached: %T", v)) // for go-sumtype to work
+	panic(fmt.Sprintf("not reached: %T", v)) // for sumtype to work
 }
 
 // toSJSON converts built-in or types' package value to sjsontype value.
@@ -170,7 +170,7 @@ func toSJSON(v any) sjsontype {
 		return pointer.To(int64Type(v))
 	}
 
-	panic(fmt.Sprintf("not reached: %T", v)) // for go-sumtype to work
+	panic(fmt.Sprintf("not reached: %T", v)) // for sumtype to work
 }
 
 // Unmarshal decodes the top-level document.
@@ -321,7 +321,7 @@ func unmarshalSingleValue(data json.RawMessage, sch *elem) (any, error) {
 	return fromSJSON(res), nil
 }
 
-// Marshal encodes the given document and set its schema in the field $s.
+// Marshal encodes given document fields and set its schema in the field $s.
 // Use it when you need to encode a document with schema, for example, when you want to store it in a database.
 func Marshal(d *types.Document) ([]byte, error) {
 	if d == nil {

@@ -14,6 +14,8 @@ linters-settings:
         deny:
           - pkg: golang.org/x/net/context
             desc: use `context` package instead
+          - pkg: golang.org/x/exp/slices
+            desc: use `slices` package instead
           - pkg: github.com/jackc/pgconn
             desc: use `github.com/jackc/pgx/v5/pgconn` package instead
           - pkg: github.com/jackc/pgproto3
@@ -40,17 +42,16 @@ linters-settings:
         files:
           - $all
           - "!**/internal/backends/sqlite/*.go"
-          - "!**/internal/handlers/pg/pgdb/*.go"
+          - "!**/internal/backends/postgresql/*.go"
+          - "!**/internal/backends/postgresql/metadata/*.go"
           - "!**/internal/handlers/hana/hanadb/*.go"
         deny:
           - pkg: github.com/FerretDB/FerretDB/internal/handlers/sjson
-      pgdb:
+      backends:
         files:
-          - $all
-          - "!**/internal/handlers/pg/*.go"
-          - "!**/cmd/envtool/*.go"
+          - "**/internal/backends/**/*.go"
         deny:
-          - pkg: github.com/FerretDB/FerretDB/internal/handlers/pg/pgdb
+          - pkg: github.com/FerretDB/FerretDB/internal/handlers/common
       commonerrors:
         files:
           - $all
@@ -71,7 +72,6 @@ linters-settings:
   godot:
     scope: toplevel
     exclude:
-      - go-sumtype:decl
       - check interfaces
     capital: true
   godox:
@@ -79,6 +79,8 @@ linters-settings:
       - BUG
       - FIXME
       - HACK
+      - lala
+      - lalala
   goheader:
     # Please do not update it, including bumping a year.
     template: |-
@@ -118,8 +120,10 @@ linters-settings:
         alias: dto
       - pkg: github.com/jackc/pgx-zap
         alias: zapadapter
+      - pkg: modernc.org/sqlite
+        alias: sqlite3
       - pkg: modernc.org/sqlite/lib
-        alias: sqlitelib
+        alias: sqlite3lib
   # ineffassign
   lll:
     line-length: 130
@@ -153,6 +157,7 @@ linters:
     - depguard
     - exhaustive
     - gci
+    - gochecksumtype
     - goconst
     - godot
     - godox

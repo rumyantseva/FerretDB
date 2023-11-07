@@ -2,6 +2,413 @@
 
 <!-- markdownlint-disable MD024 MD034 -->
 
+## [v1.14.0](https://github.com/FerretDB/FerretDB/releases/tag/v1.14.0) (TBD)
+
+### What's Changed
+
+#### Old PostgreSQL backend
+
+Is removed.
+
+## [v1.13.0](https://github.com/FerretDB/FerretDB/releases/tag/v1.13.0) (2023-10-23)
+
+### What's Changed
+
+#### New PostgreSQL backend
+
+The new PostgreSQL backend is now enabled by default.
+You can still enable the old backend with `--postgresql-old` flag or `FERRETDB_POSTGRESQL_OLD=true` environment variable,
+but it will be removed in the next release.
+
+#### Default SQLite directory for Docker images
+
+Our Docker images (but not binaries and `.deb` / `.rpm` packages) now use `/state` directory for the SQLite backend.
+That directory is also a Docker volume, so data will be preserved after the container restart by default.
+
+#### `arm/v7` packages
+
+We now provide `linux/arm/v7` binaries, Docker images, and `.deb` / `.rpm` packages.
+
+### New Features 🎉
+
+- Implement pushdown for `aggregate` for PostgreSQL by @noisersup in https://github.com/FerretDB/FerretDB/pull/3607
+- Implement sort pushdown for PostgreSQL by @noisersup in https://github.com/FerretDB/FerretDB/pull/3504
+- Implement limit pushdown for PostgreSQL by @noisersup in https://github.com/FerretDB/FerretDB/pull/3580
+- Implement `indexSizes` for `collStats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3575
+- Implement free storage in `collStats`, `dbStats` and `aggregate` `$collStats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3594
+- Add capped collection counts in `serverStatus` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3566
+- Integrate Statsviz by @codenoid in https://github.com/FerretDB/FerretDB/pull/3591
+
+### Fixed Bugs 🐛
+
+- Fix invalid validation for `_id` field by @slavabobik in https://github.com/FerretDB/FerretDB/pull/3523
+- Fix `explain` panic for non-existent collection on PostgreSQL by @noisersup in https://github.com/FerretDB/FerretDB/pull/3541
+
+### Enhancements 🛠
+
+- Add basic logging for PostgreSQL backend by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3560
+- Report actual backend name by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3570
+- Improve `/debug` page by @codenoid in https://github.com/FerretDB/FerretDB/pull/3592
+- Add filter pushdown for `_id: <string>` for SQLite by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3599
+
+### Documentation 📄
+
+- Add release blog post for FerretDB v1.12 by @Fashander in https://github.com/FerretDB/FerretDB/pull/3555
+- Crush images by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3561
+- Change SQLite directory for Docker images by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3571
+- Enable Mermaid diagrams in Docusaurus by @sid-js in https://github.com/FerretDB/FerretDB/pull/3532
+- Enable linters to accept exclamation marks in headers by @chanon-mike in https://github.com/FerretDB/FerretDB/pull/3578
+- Add SQLite info to glossary list by @pvinoda in https://github.com/FerretDB/FerretDB/pull/3593
+- Add blog post on using Illa Cloud with FerretDB by @Fashander in https://github.com/FerretDB/FerretDB/pull/3516
+- Add SQLite set up docs by @Fashander in https://github.com/FerretDB/FerretDB/pull/3568
+- Add "How to Install FerretDB on Ubuntu" blog post by @Fashander in https://github.com/FerretDB/FerretDB/pull/2802
+- Update ILLA blog post by @Fashander in https://github.com/FerretDB/FerretDB/pull/3620
+- Add links to blog by @Fashander in https://github.com/FerretDB/FerretDB/pull/3623
+
+### Other Changes 🤖
+
+- Improve embedded package documentation by @princejha95 in https://github.com/FerretDB/FerretDB/pull/3537
+- Use separate PostgreSQL databases in tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3553
+- Make `collStats` calculate collection size accurately for `PostgreSQL` statistics by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3513
+- Implement `Collection.Compact` for SQLite by @Akhil-2001 in https://github.com/FerretDB/FerretDB/pull/3536
+- Use self-hosted runner for packages building by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3569
+- Do not create databases during local setup by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3572
+- Build `arm/v7` binaries by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3577
+- Add more tests and fixes for `$collStats` aggregation stage by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3565
+- Build `arm/v7` `.deb` and `.rpm` packages and binaries by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3576
+- Add tests for insertion of documents with invalid `_id` fields by @slavabobik in https://github.com/FerretDB/FerretDB/pull/3579
+- Add more data to output of `collStats` and `dbStats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3538
+- Update `dataSize` and `dbStats` integration tests by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3585
+- Do not return stats in `Backend.ListDatabases` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3588
+- Remove old TODOs by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3595
+- Use stdlib's `slices` package by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3590
+- Remove done TODO by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3596
+- Check that linked issues are open by @KrishnaSindhur in https://github.com/FerretDB/FerretDB/pull/3277
+- Make it easier to run old PG handler by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3598
+- Implement `Collection.Compact` for PostgreSQL by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3603
+- Do not skip invalid TODOs by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3597
+- Unskip filter pushdown integration tests by @noisersup in https://github.com/FerretDB/FerretDB/pull/3605
+- Call `ANALYZE` less often by @Aditya1404Sal in https://github.com/FerretDB/FerretDB/pull/3563
+- Keep envtool's version always up-to-date by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3609
+- Fix some tests for SQLite backend by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3617
+- Do not create OpLog database/collection on a fly by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3625
+- Make `listIndexes` return a sorted list by @codenoid in https://github.com/FerretDB/FerretDB/pull/3602
+
+### New Contributors
+
+- @Akhil-2001 made their first contribution in https://github.com/FerretDB/FerretDB/pull/3536
+- @sid-js made their first contribution in https://github.com/FerretDB/FerretDB/pull/3532
+- @codenoid made their first contribution in https://github.com/FerretDB/FerretDB/pull/3591
+- @chanon-mike made their first contribution in https://github.com/FerretDB/FerretDB/pull/3578
+- @pvinoda made their first contribution in https://github.com/FerretDB/FerretDB/pull/3593
+
+[All closed issues and pull requests](https://github.com/FerretDB/FerretDB/milestone/55?closed=1).
+[All commits](https://github.com/FerretDB/FerretDB/compare/v1.12.1...v1.13.0).
+
+## [v1.12.1](https://github.com/FerretDB/FerretDB/releases/tag/v1.12.1) (2023-10-10)
+
+### What's Changed
+
+#### New PostgreSQL backend
+
+The new PostgreSQL backend is ready for testing.
+Enable it with `--postgresql-new` flag or `FERRETDB_POSTGRESQL_NEW=true` environment variable.
+The next FerretDB version will enable it by default.
+
+#### Docker images changes
+
+Production Docker images use `scratch` as a base Docker image.
+The only file present in the image is a FerretDB binary (with root TLS certificates embedded).
+
+#### `arm64` binaries
+
+In addition to `linux/arm64` Docker images, we now provide `linux/arm64` binaries and `.deb` / `.rpm` packages.
+
+### New Features 🎉
+
+- Build `arm64` binaries and packages by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3477
+- Implement metrics collection by @Mihai22125 in https://github.com/FerretDB/FerretDB/pull/3430
+- Implement `RenameCollection` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3440
+- Implement `InsertAll` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3419
+- Implement `DeleteAll` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3441
+- Implement `DropDatabase` and `Status` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3451
+- Implement `UpdateAll` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3449
+- Implement `ListCollections`, `CreateCollection` and `DropCollection` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3444
+- Implement `explain` by @noisersup in https://github.com/FerretDB/FerretDB/pull/3465
+- Implement `database.Stats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3464
+- Implement `collection.Stats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3478
+- Implement `CreateIndexes`, `DropIndexes`, `ListIndexes` by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3468
+- Implement filter pushdown by @noisersup in https://github.com/FerretDB/FerretDB/pull/3482
+- Add info about indexes to `dbStats` response by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3534
+
+### Fixed Bugs 🐛
+
+- Verify that client metadata not being mutated by @kropidlowsky in https://github.com/FerretDB/FerretDB/pull/3194
+- Relax restrictions when \_id is not the first field in projection by @princejha95 in https://github.com/FerretDB/FerretDB/pull/3491
+- Fix `_id` restriction in aggregation `$project` stage by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3508
+
+### Enhancements 🛠
+
+- Implement validation for `createIndexes` and `dropIndexes` commands for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3373
+- Use `Ping` for checking connection by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3519
+
+### Documentation 📄
+
+- Update Writing Guide by @Fashander in https://github.com/FerretDB/FerretDB/pull/3424
+- Add blog post on Using MajorM as MongoDB GUI for FerretDB by @Fashander in https://github.com/FerretDB/FerretDB/pull/3387
+- Add release blog post for FerretDB v1.11.0 by @Fashander in https://github.com/FerretDB/FerretDB/pull/3439
+- Fix RSS feed issue with images by @Fashander in https://github.com/FerretDB/FerretDB/pull/3417
+- Republish Hacktobest blog post by @Fashander in https://github.com/FerretDB/FerretDB/pull/3429
+- Add blog post on Enmeshed by @Fashander in https://github.com/FerretDB/FerretDB/pull/3448
+- Add `$project` and `$unset` to aggregation stages section by @Akhaled19 in https://github.com/FerretDB/FerretDB/pull/3450
+- Add operation mode definition to Glossary by @rohitkbc in https://github.com/FerretDB/FerretDB/pull/3472
+- Improve definitions for aggregation stages by @Fashander in https://github.com/FerretDB/FerretDB/pull/3499
+- Add TODOs for capped collections by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3461
+- Fix blog post formatting by @Fashander in https://github.com/FerretDB/FerretDB/pull/3515
+- Fix typo in contributing documentation by @jrmanes in https://github.com/FerretDB/FerretDB/pull/3507
+- Add mermaid diagrams by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3524
+- Update documentation by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3530
+
+### Other Changes 🤖
+
+- Add CI configurations by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3423
+- Fix CI configuration and add TODOs by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3436
+- Add SAP HANA backend stub by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3433
+- Bump deps by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3437
+- Remove extra function by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3447
+- Fix fluky `TestRenameCollectionCompat` tests by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3438
+- Mark pushdown results based on tested backend by @noisersup in https://github.com/FerretDB/FerretDB/pull/3446
+- Run tests with `envtool tests run` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3453
+- Remove unused expected failures by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3455
+- Tweak SQLite backend tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3460
+- Add tests for backends contract by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3456
+- Speed-up Docker image building by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3470
+- Fix running a subset of tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3479
+- Add a workaround for Docker build failures by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3480
+- Add stubs for `Collection.Compact` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3485
+- Process collection name param using `collection` tag by @adetunjii in https://github.com/FerretDB/FerretDB/pull/3476
+- Revive logic of lower cased key for collection name by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3494
+- Add `RecordID` to `types.Document` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3495
+- Extract `ReservedPrefix` constant by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3497
+- Fix stress tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3502
+- Fix concurrent Docker builds by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3503
+- Store indexes metadata by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3434
+- Tweak tests timeouts by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3514
+- Bump Go version by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3510
+- Disallow importing handlers code from backends by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3512
+- Disable `auto_vacuum` for SQLite by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3496
+- Fix index name generation by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3511
+- Fix unit tests for indexes by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3531
+- Make new PostgreSQL backend tests pass by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3522
+
+### New Contributors
+
+- @Mihai22125 made their first contribution in https://github.com/FerretDB/FerretDB/pull/3430
+- @Akhaled19 made their first contribution in https://github.com/FerretDB/FerretDB/pull/3450
+- @rohitkbc made their first contribution in https://github.com/FerretDB/FerretDB/pull/3472
+- @princejha95 made their first contribution in https://github.com/FerretDB/FerretDB/pull/3491
+- @jrmanes made their first contribution in https://github.com/FerretDB/FerretDB/pull/3507
+
+[All closed issues and pull requests](https://github.com/FerretDB/FerretDB/milestone/54?closed=1).
+[All commits](https://github.com/FerretDB/FerretDB/compare/v1.11.0...v1.12.1).
+
+## [v1.11.0](https://github.com/FerretDB/FerretDB/releases/tag/v1.11.0) (2023-09-25)
+
+### Fixed Bugs 🐛
+
+- Fix `collStats` to return correct count of documents for `SQLite` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3363
+- Fix metadata updates for `dropIndexes` by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3358
+
+### Enhancements 🛠
+
+- Return statistics of indexes for `collStats` and `dbStats` for SQLite backend by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3361
+
+### Documentation 📄
+
+- Improve blog format by @Fashander in https://github.com/FerretDB/FerretDB/pull/3359
+- Add a blog post for v1.10 by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3346
+- Add docs for migrating to MongoDB from FerretDB by @Fashander in https://github.com/FerretDB/FerretDB/pull/3374
+- Mention SQLite in docs by @ptrfarkas in https://github.com/FerretDB/FerretDB/pull/3408
+
+### Other Changes 🤖
+
+- Add test for inserting different data types by @noisersup in https://github.com/FerretDB/FerretDB/pull/3345
+- Recreate test directory by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3364
+- Use consistent spelling by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3365
+- Use filter and insert more documents in `BenchmarkReplaceSettingsDocument` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3343
+- Replace deprecated Jaeger exporter by @adetunjii in https://github.com/FerretDB/FerretDB/pull/3368
+- Remove the need to close `conninfo` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3376
+- Add small tweaks by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3377
+- Add CI configuration for SQLite without pushdown by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3381
+- Enforce valid `types` usage by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3384
+- Reorder codebase in SQLite registry by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3382
+- Store `PostgreSQL` metadata by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3356
+- Add `TODO`s by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3412
+- Run new PostgreSQL backend tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3407
+- Implement `Query` in new `PostgreSQL` backend by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3411
+
+[All closed issues and pull requests](https://github.com/FerretDB/FerretDB/milestone/52?closed=1).
+[All commits](https://github.com/FerretDB/FerretDB/compare/v1.10.1...v1.11.0).
+
+## [v1.10.1](https://github.com/FerretDB/FerretDB/releases/tag/v1.10.1) (2023-09-14)
+
+### What's Changed
+
+With this release, the SQLite backend support is officially out of beta,
+on par with our PostgreSQL backend, and fully supported!
+
+### New Features 🎉
+
+- Implement `aggregate` for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3256
+- Implement `collStats` for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3295
+- Implement `createIndexes` for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3304
+- Implement `dbStats` for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3270
+- Implement `distinct` for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3265
+- Implement `dropIndexes` for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3329
+- Implement `explain` command for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3264
+- Implement `findAndModify` for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3302
+- Implement `getLog` for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3279
+- Implement `listDatabases` for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3269
+- Implement `listIndexes` for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3301
+- Implement `renameCollection` for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3321
+- Implement `serverStatus` and `dataSize` commands for SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3316
+- Support `_id` implicit filter for `ObjectID` in SQLite by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3330
+- Support `$bit` bitwise update operator by @adetunjii in https://github.com/FerretDB/FerretDB/pull/3266
+- Support `ordered` `insert`s for SQLite by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3223
+
+### Enhancements 🛠
+
+- Make `delete`s atomic for SQLite by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3291
+- Make `update`s atomic for SQLite by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3296
+- Do not change `search_path` parameter by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3299
+
+### Documentation 📄
+
+- Cleanup `$bit` update operator by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3315
+- Document how to test for compatibility by @b1ron in https://github.com/FerretDB/FerretDB/pull/3268
+- Update blog writing guide documentation by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3209
+- Update category links in writing guide by @Fashander in https://github.com/FerretDB/FerretDB/pull/3323
+- Update deb.md - minor grammar correction by @athkishore in https://github.com/FerretDB/FerretDB/pull/3289
+- Update the writing guide by @Fashander in https://github.com/FerretDB/FerretDB/pull/3311
+
+### Other Changes 🤖
+
+- Add ability to freeze `*types.Document` and `*types.Array` by @KrishnaSindhur in https://github.com/FerretDB/FerretDB/pull/3253
+- Add backend decorators and OpLog stub by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3303
+- Add backend interface for `collStats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3294
+- Add backend interface for `dbStats` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3267
+- Add more tests by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3336
+- Add new PostgreSQL backend stub by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3319
+- Add tests for accessing aggregation variable `$$ROOT` field by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3254
+- Add tests for validation bug by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3286
+- Add transactions to `fsql` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3278
+- Bump deps by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3284
+- Clean-up `*types.Timestamp` a bit by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3305
+- Do not `ConsumeValues` in the `$group` aggregation stage by @adetunjii in https://github.com/FerretDB/FerretDB/pull/3344
+- Expand architecture docs, add comments by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3288
+- Fix params handling for `dropIndexes` implementation for SQLite by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3350
+- Make registry return full collection info by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3292
+- Remove `Database.Close` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3327
+- Remove duplicated `$expr` tests by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3255
+- Return correct response if unique index violation happened on SQLite backend by @rumyantseva in https://github.com/FerretDB/FerretDB/pull/3353
+- Simplify and deprecate `commonerrors.WriteErrors` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3258
+- Skip tests for `enable` `setFreeMonitoring` for MongoDB by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3318
+- Tweak MongoDB initialization process by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3307
+- Update TODO comments by @noisersup in https://github.com/FerretDB/FerretDB/pull/3262
+- Use `pkgsite` instead of `godoc` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3326
+- Use Go 1.21 by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3324
+
+### New Contributors
+
+- @athkishore made their first contribution in https://github.com/FerretDB/FerretDB/pull/3289
+
+[All closed issues and pull requests](https://github.com/FerretDB/FerretDB/milestone/51?closed=1).
+[All commits](https://github.com/FerretDB/FerretDB/compare/v1.9.0...v1.10.1).
+
+## [v1.9.0](https://github.com/FerretDB/FerretDB/releases/tag/v1.9.0) (2023-08-28)
+
+### Enhancements 🛠
+
+- Add more metrics for `*sql.DB` by @slavabobik in https://github.com/FerretDB/FerretDB/pull/3230
+
+### Documentation 📄
+
+- Add blog post for FerretDB v1.8.0 by @Fashander in https://github.com/FerretDB/FerretDB/pull/3198
+- Fix typos in documentation by @pratikmota in https://github.com/FerretDB/FerretDB/pull/3217
+- Make the writing guide accessible but unlisted by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3221
+- Add blogpost on Leafcloud by @Fashander in https://github.com/FerretDB/FerretDB/pull/3153
+- Add Postgres Ibiza event blog post by @Fashander in https://github.com/FerretDB/FerretDB/pull/3210
+- Add Civo Navigate event blog post by @Fashander in https://github.com/FerretDB/FerretDB/pull/3201
+
+### Other Changes 🤖
+
+- Configure repo settings with files by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3208
+- Update `go-hdb` to v1.4.1 by @aenkya in https://github.com/FerretDB/FerretDB/pull/3213
+- Bump deps by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3215
+- Add another stress test for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3195
+- Improve building with test coverage information by @durgakiran in https://github.com/FerretDB/FerretDB/pull/3059
+- Fix concurrent SQLite tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3222
+- Refactor aggregation operators by @noisersup in https://github.com/FerretDB/FerretDB/pull/3188
+- Add stubs for `renameCollection` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3233
+- Update issue links by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3234
+- Add stubs for `explain` by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3236
+- Bump deps by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3248
+- Add linter for issue comments by @KrishnaSindhur in https://github.com/FerretDB/FerretDB/pull/3154
+- Simplify `commonerrors` package by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3227
+- Publish Docker images on quay.io by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3250
+- Refactor aggregation accumulators by @noisersup in https://github.com/FerretDB/FerretDB/pull/3203
+- Add new PostgreSQL backend stub by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3251
+- Cleanup SQLite tests by @noisersup in https://github.com/FerretDB/FerretDB/pull/3246
+
+### New Contributors
+
+- @aenkya made their first contribution in https://github.com/FerretDB/FerretDB/pull/3213
+- @pratikmota made their first contribution in https://github.com/FerretDB/FerretDB/pull/3217
+- @durgakiran made their first contribution in https://github.com/FerretDB/FerretDB/pull/3059
+- @slavabobik made their first contribution in https://github.com/FerretDB/FerretDB/pull/3230
+
+[All closed issues and pull requests](https://github.com/FerretDB/FerretDB/milestone/50?closed=1).
+[All commits](https://github.com/FerretDB/FerretDB/compare/v1.8.0...v1.9.0).
+
+## [v1.8.0](https://github.com/FerretDB/FerretDB/releases/tag/v1.8.0) (2023-08-14)
+
+### New Features 🎉
+
+- Implement `$group` stage `_id` expression by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3138
+- Implement `$expr` evaluation query operator by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3163
+
+### Fixed Bugs 🐛
+
+- Do not return immutable `_id` error from `findAndModify` for upserting same `_id` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3171
+
+### Enhancements 🛠
+
+- Cache SQLite tables metadata by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3124
+- Use lock for SQLite metadata by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3146
+
+### Other Changes 🤖
+
+- Bump deps by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3142
+- Improve MongoDB/FerretDB error checking in tests by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3143
+- Expect some `aggregate` and `insert` tests to fail for SQLite by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3147
+- Make administration command integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3152
+- Bump deps, including Go by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3160
+- Make aggregate stats integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3151
+- Simplify tests a bit by @AlekSi in https://github.com/FerretDB/FerretDB/pull/3149
+- Make `distinct` and `explain` command integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3159
+- Use one implementation for finding path values by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3087
+- Make aggregate documents compat tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3150
+- Make `query` integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3182
+- Make `findAndModify` integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3173
+- Make index integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3185
+- Add tests for `$$ROOT` aggregation expression variable by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3180
+- Make `getMore` integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3174
+- Make `update` integration tests pass for SQLite by @noisersup in https://github.com/FerretDB/FerretDB/pull/3184
+- Add tests for `$$ROOT` by @chilagrow in https://github.com/FerretDB/FerretDB/pull/3187
+
+[All closed issues and pull requests](https://github.com/FerretDB/FerretDB/milestone/49?closed=1).
+[All commits](https://github.com/FerretDB/FerretDB/compare/v1.7.0...v1.8.0).
+
 ## [v1.7.0](https://github.com/FerretDB/FerretDB/releases/tag/v1.7.0) (2023-07-31)
 
 ### New Features 🎉
@@ -185,7 +592,7 @@ This and earlier versions of FerretDB with Tigris support will still be availabl
 - Tweak contributing guidelines by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2886
 - Add handler's metrics registration by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2895
 - Clean-up some code and comments by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2904
-- Fix cancelation signals propagation by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2908
+- Fix cancellation signals propagation by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2908
 - Bump deps, add permissions monitoring by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2930
 - Fix integration tests after bumping deps by @noisersup in https://github.com/FerretDB/FerretDB/pull/2934
 - Update benchmark to use cursors by @AlekSi in https://github.com/FerretDB/FerretDB/pull/2932

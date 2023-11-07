@@ -33,7 +33,7 @@ import (
 )
 
 func TestGetMoreCommand(t *testing.T) {
-	t.Parallel()
+	// do not run tests in parallel to avoid using too many backend connections
 
 	// options are applied to create a client that uses single connection pool
 	s := setup.SetupWithOpts(t, &setup.SetupOpts{
@@ -440,7 +440,8 @@ func TestGetMoreCommand(t *testing.T) {
 }
 
 func TestGetMoreBatchSizeCursor(t *testing.T) {
-	t.Parallel()
+	// do not run tests in parallel to avoid using too many backend connections
+
 	ctx, collection := setup.Setup(t)
 
 	// The test cases call `find`/`aggregate`, then may implicitly call `getMore` upon `cursor.Next()`.
@@ -532,7 +533,8 @@ func TestGetMoreBatchSizeCursor(t *testing.T) {
 			}
 
 			// next batch obtain from implicit call to `getMore` has the rest of the documents, not default batchSize
-			// TODO: 16MB batchSize limit https://github.com/FerretDB/FerretDB/issues/2824
+			// 16MB batchSize limit
+			// TODO https://github.com/FerretDB/FerretDB/issues/2824
 			ok := cursor.Next(ctx)
 			require.True(t, ok, "expected to have next document")
 			require.Equal(t, 118, cursor.RemainingBatchLength())
@@ -551,7 +553,8 @@ func TestGetMoreBatchSizeCursor(t *testing.T) {
 			require.Equal(t, 0, cursor.RemainingBatchLength())
 
 			// next batch obtain from implicit call to `getMore` has the rest of the documents, not 0 batchSize
-			// TODO: 16MB batchSize limit https://github.com/FerretDB/FerretDB/issues/2824
+			// 16MB batchSize limit
+			// TODO https://github.com/FerretDB/FerretDB/issues/2824
 			ok := cursor.Next(ctx)
 			require.True(t, ok, "expected to have next document")
 			require.Equal(t, 219, cursor.RemainingBatchLength())
@@ -581,7 +584,7 @@ func TestGetMoreBatchSizeCursor(t *testing.T) {
 }
 
 func TestGetMoreCommandConnection(t *testing.T) {
-	t.Parallel()
+	// do not run tests in parallel to avoid using too many backend connections
 
 	// options are applied to create a client that uses single connection pool
 	s := setup.SetupWithOpts(t, &setup.SetupOpts{
@@ -694,7 +697,8 @@ func TestGetMoreCommandConnection(t *testing.T) {
 }
 
 func TestGetMoreCommandMaxTimeMSErrors(t *testing.T) {
-	t.Parallel()
+	// do not run tests in parallel to avoid using too many backend connections
+
 	ctx, collection := setup.Setup(t)
 
 	for name, tc := range map[string]struct { //nolint:vet // used for testing only
@@ -875,7 +879,7 @@ func TestGetMoreCommandMaxTimeMSErrors(t *testing.T) {
 }
 
 func TestGetMoreCommandMaxTimeMSCursor(t *testing.T) {
-	// do not run tests in parallel to for server execution time to use maximum possible maxTimeMS
+	// do not run tests in parallel to avoid using too many backend connections
 
 	// options are applied to create a client that uses single connection pool
 	s := setup.SetupWithOpts(t, &setup.SetupOpts{
@@ -1001,6 +1005,8 @@ func TestGetMoreCommandMaxTimeMSCursor(t *testing.T) {
 
 		cursor, err := collection.Aggregate(ctx, bson.A{}, opts)
 		require.NoError(t, err)
+
+		defer cursor.Close(ctx)
 
 		cursor.SetBatchSize(50000)
 

@@ -12,7 +12,7 @@ _This section contains a list of common terminologies related to FerretDB_.
 
 #### aggregation
 
-A way of processsing documents in a collection and passing them through various operations or stages.
+A way of processing documents in a collection and passing them through various operations or stages.
 See [list of supported aggregation operations and commands here](supported-commands.md#aggregation-pipelines).
 
 #### aggregation pipeline
@@ -118,6 +118,16 @@ A keyword that starts with a `$` character to query, update, or transform data.
 
 ---
 
+### O
+
+#### Operation modes
+
+FerretDB utilizes operation modes to define its approach in handling incoming requests, serving purposes such as testing, debugging, and bug reporting.
+By default, FerretDB operates in `normal` mode.
+See [Operation modes](../configuration/operation-modes.md) for more details.
+
+---
+
 ### P
 
 #### primary key
@@ -135,5 +145,12 @@ See [Operation modes](../configuration/operation-modes.md) for more details.
 
 An open source relational database.
 FerretDB uses PostgreSQL as a database engine.
+
+### S
+
+#### SQLite
+
+SQLite is a self-contained, serverless system ideal for lightweight applications.
+FerretDB now offers SQLite backend support.
 
 ---

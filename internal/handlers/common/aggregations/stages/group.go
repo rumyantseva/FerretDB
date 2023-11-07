@@ -118,13 +118,7 @@ func newGroup(stage *types.Document) (aggregations.Stage, error) {
 
 // Process implements Stage interface.
 func (g *group) Process(ctx context.Context, iter types.DocumentsIterator, closer *iterator.MultiCloser) (types.DocumentsIterator, error) { //nolint:lll // for readability
-	// TODO https://github.com/FerretDB/FerretDB/issues/2863
-	docs, err := iterator.ConsumeValues(iterator.Interface[struct{}, *types.Document](iter))
-	if err != nil {
-		return nil, lazyerrors.Error(err)
-	}
-
-	groupedDocuments, err := g.groupDocuments(docs)
+	groupedDocuments, err := g.groupDocuments(iter)
 	if err != nil {
 		return nil, err
 	}
@@ -184,8 +178,6 @@ func validateGroupKey(groupKey any) error {
 			// TODO https://github.com/FerretDB/FerretDB/issues/3129
 			return processGroupStageError(err)
 		}
-
-		return nil
 	}
 
 	iter := doc.Iterator()
@@ -234,10 +226,19 @@ func validateGroupKey(groupKey any) error {
 
 // groupDocuments groups documents into groups using group key. If group key contains expressions
 // or operators, they are evaluated before using it as the group key of documents.
-func (g *group) groupDocuments(in []*types.Document) ([]groupedDocuments, error) {
+func (g *group) groupDocuments(iter types.DocumentsIterator) ([]groupedDocuments, error) {
 	var m groupMap
 
-	for _, doc := range in {
+	for {
+		_, doc, err := iter.Next()
+		if errors.Is(err, iterator.ErrIteratorDone) {
+			break
+		}
+
+		if err != nil {
+			return nil, lazyerrors.Error(err)
+		}
+
 		switch groupKey := g.groupExpression.(type) {
 		case *types.Document:
 			val, err := evaluateDocument(groupKey, doc, false)

@@ -44,7 +44,7 @@ const (
 // FindAndModifyParams represent parameters for the findAndModify command.
 type FindAndModifyParams struct {
 	DB                string          `ferretdb:"$db"`
-	Collection        string          `ferretdb:"collection"`
+	Collection        string          `ferretdb:"findAndModify,collection"`
 	Comment           string          `ferretdb:"comment,opt"`
 	Query             *types.Document `ferretdb:"query,opt"`
 	Sort              *types.Document `ferretdb:"sort,opt"`
@@ -120,7 +120,6 @@ func GetFindAndModifyParams(doc *types.Document, l *zap.Logger) (*FindAndModifyP
 		case *types.Document:
 			params.Update = updateParam
 		case *types.Array:
-			// TODO aggregation pipeline stages metrics
 			return nil, commonerrors.NewCommandErrorMsgWithArgument(
 				commonerrors.ErrNotImplemented,
 				"Aggregation pipelines are not supported yet",
@@ -234,20 +233,29 @@ func prepareDocumentForUpdate(docs []*types.Document, params *FindAndModifyParam
 
 	for _, k := range params.Update.Keys() {
 		v := must.NotFail(params.Update.Get(k))
-		if k == "_id" {
+		update.Set(k, v)
+	}
+
+	if !params.Update.Has("_id") {
+		return update, nil
+	}
+
+	upsertID := must.NotFail(params.Update.Get("_id"))
+
+	for _, doc := range docs {
+		id := must.NotFail(doc.Get("_id"))
+		if id != upsertID {
 			return nil, commonerrors.NewCommandErrorMsgWithArgument(
 				commonerrors.ErrImmutableField,
 				fmt.Sprintf(
-					"Plan executor error during findAndModify :: caused "+
-						"by :: After applying the update, the (immutable) field "+
-						"'_id' was found to have been altered to _id: \"%s\"",
-					v,
+					`Plan executor error during findAndModify :: caused `+
+						`by :: After applying the update, the (immutable) field `+
+						`'_id' was found to have been altered to _id: "%s"`,
+					upsertID,
 				),
 				"findAndModify",
 			)
 		}
-
-		update.Set(k, v)
 	}
 
 	return update, nil
