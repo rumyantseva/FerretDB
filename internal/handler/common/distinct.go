@@ -89,7 +89,7 @@ func GetDistinctParams(document *types.Document, l *zap.Logger) (*DistinctParams
 // If the key is found in the document, and the value is an array, each element of the array is added to the result.
 // Otherwise, the value itself is added to the result.
 func FilterDistinctValues(iter types.DocumentsIterator, key string) (*types.Array, error) {
-	distinct := types.MakeArray(0)
+	distinct := make(map[any]struct{})
 
 	defer iter.Close()
 
@@ -127,20 +127,22 @@ func FilterDistinctValues(iter types.DocumentsIterator, key string) (*types.Arra
 						return nil, lazyerrors.Error(err)
 					}
 
-					if !distinct.Contains(el) {
-						distinct.Append(el)
-					}
+					distinct[el] = struct{}{}
 				}
 
 			default:
-				if !distinct.Contains(v) {
-					distinct.Append(v)
-				}
+				distinct[v] = struct{}{}
 			}
 		}
 	}
 
-	SortArray(distinct, types.Ascending)
+	res := types.MakeArray(len(distinct))
 
-	return distinct, nil
+	for val := range distinct {
+		res.Append(val)
+	}
+
+	SortArray(res, types.Ascending)
+
+	return res, nil
 }
